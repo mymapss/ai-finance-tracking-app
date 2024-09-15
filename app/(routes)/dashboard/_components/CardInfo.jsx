@@ -13,42 +13,41 @@ function CardInfo({ budgetList, incomeList }) {
   const [totalBudget, setTotalBudget] = useState(0);
   const [totalSpend, setTotalSpend] = useState(0);
   const [totalIncome, setTotalIncome] = useState(0);
-  const [financialAdvice, setFinancialAdvice] = useState("");
+  const [financialAdvice, setFinancialAdvice] = useState("Loading financial advice...");
 
   useEffect(() => {
     if (budgetList.length > 0 || incomeList.length > 0) {
-      CalculateCardInfo();
+      calculateCardInfo();
     }
   }, [budgetList, incomeList]);
 
   useEffect(() => {
     if (totalBudget > 0 || totalIncome > 0 || totalSpend > 0) {
       const fetchFinancialAdvice = async () => {
-        const advice = await getFinancialAdvice(
-          totalBudget,
-          totalIncome,
-          totalSpend
-        );
-        setFinancialAdvice(advice);
+        try {
+          const advice = await getFinancialAdvice(totalBudget, totalIncome, totalSpend);
+          setFinancialAdvice(advice);
+        } catch (error) {
+          setFinancialAdvice("Sorry, I couldn't fetch the financial advice at this moment. Please try again later.");
+        }
       };
 
       fetchFinancialAdvice();
     }
   }, [totalBudget, totalIncome, totalSpend]);
 
-  const CalculateCardInfo = () => {
-    console.log(budgetList);
+  const calculateCardInfo = () => {
     let totalBudget_ = 0;
     let totalSpend_ = 0;
     let totalIncome_ = 0;
 
     budgetList.forEach((element) => {
-      totalBudget_ = totalBudget_ + Number(element.amount);
-      totalSpend_ = totalSpend_ + element.totalSpend;
+      totalBudget_ += Number(element.amount);
+      totalSpend_ += element.totalSpend;
     });
 
     incomeList.forEach((element) => {
-      totalIncome_ = totalIncome_ + element.totalAmount;
+      totalIncome_ += element.totalAmount;
     });
 
     setTotalIncome(totalIncome_);
@@ -58,24 +57,17 @@ function CardInfo({ budgetList, incomeList }) {
 
   return (
     <div>
-      {budgetList?.length > 0 ? (
+      {budgetList.length > 0 ? (
         <div>
           <div className="p-7 border mt-4 -mb-1 rounded-2xl flex items-center justify-between">
-            <div className="">
-              <div className="flex mb-2 flex-row space-x-1 items-center ">
-                <h2 className="text-md ">Finan Smart AI</h2>
+            <div>
+              <div className="flex mb-2 flex-row space-x-1 items-center">
+                <h2 className="text-md">Finan Smart AI</h2>
                 <Sparkles
-                  className="rounded-full text-white w-10 h-10 p-2
-    bg-gradient-to-r
-    from-pink-500
-    via-red-500
-    to-yellow-500
-    background-animate"
+                  className="rounded-full text-white w-10 h-10 p-2 bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500"
                 />
               </div>
-              <h2 className="font-light text-md">
-                {financialAdvice || "Loading financial advice..."}
-              </h2>
+              <h2 className="font-light text-md">{financialAdvice}</h2>
             </div>
           </div>
 
@@ -83,34 +75,28 @@ function CardInfo({ budgetList, incomeList }) {
             <div className="p-7 border rounded-2xl flex items-center justify-between">
               <div>
                 <h2 className="text-sm">Total Budget</h2>
-                <h2 className="font-bold text-2xl">
-                  ${formatNumber(totalBudget)}
-                </h2>
+                <h2 className="font-bold text-2xl">${formatNumber(totalBudget)}</h2>
               </div>
               <PiggyBank className="bg-blue-800 p-3 h-12 w-12 rounded-full text-white" />
             </div>
             <div className="p-7 border rounded-2xl flex items-center justify-between">
               <div>
                 <h2 className="text-sm">Total Spend</h2>
-                <h2 className="font-bold text-2xl">
-                  ${formatNumber(totalSpend)}
-                </h2>
+                <h2 className="font-bold text-2xl">${formatNumber(totalSpend)}</h2>
               </div>
               <ReceiptText className="bg-blue-800 p-3 h-12 w-12 rounded-full text-white" />
             </div>
             <div className="p-7 border rounded-2xl flex items-center justify-between">
               <div>
                 <h2 className="text-sm">No. Of Budget</h2>
-                <h2 className="font-bold text-2xl">{budgetList?.length}</h2>
+                <h2 className="font-bold text-2xl">{budgetList.length}</h2>
               </div>
               <Wallet className="bg-blue-800 p-3 h-12 w-12 rounded-full text-white" />
             </div>
             <div className="p-7 border rounded-2xl flex items-center justify-between">
               <div>
                 <h2 className="text-sm">Sum of Income Streams</h2>
-                <h2 className="font-bold text-2xl">
-                  ${formatNumber(totalIncome)}
-                </h2>
+                <h2 className="font-bold text-2xl">${formatNumber(totalIncome)}</h2>
               </div>
               <CircleDollarSign className="bg-blue-800 p-3 h-12 w-12 rounded-full text-white" />
             </div>

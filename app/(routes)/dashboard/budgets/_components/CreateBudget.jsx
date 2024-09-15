@@ -21,31 +21,35 @@ import { toast } from "sonner";
 function CreateBudget({ refreshData }) {
   const [emojiIcon, setEmojiIcon] = useState("😀");
   const [openEmojiPicker, setOpenEmojiPicker] = useState(false);
-
-  const [name, setName] = useState();
-  const [amount, setAmount] = useState();
-
+  const [name, setName] = useState("");
+  const [amount, setAmount] = useState("");
   const { user } = useUser();
 
   /**
    * Used to Create New Budget
    */
   const onCreateBudget = async () => {
-    const result = await db
-      .insert(Budgets)
-      .values({
-        name: name,
-        amount: amount,
-        createdBy: user?.primaryEmailAddress?.emailAddress,
-        icon: emojiIcon,
-      })
-      .returning({ insertedId: Budgets.id });
-
-    if (result) {
-      refreshData();
-      toast("New Budget Created!");
+    try {
+      const result = await db
+        .insert(Budgets)
+        .values({
+          name: name,
+          amount: amount,
+          createdBy: user?.primaryEmailAddress?.emailAddress, // Should match the column name in the schema
+          icon: emojiIcon,
+        })
+        .returning({ insertedId: Budgets.id });
+  
+      if (result) {
+        refreshData();
+        toast("New Budget Created!");
+      }
+    } catch (error) {
+      console.error("Error creating budget:", error);
     }
   };
+  
+
   return (
     <div>
       <Dialog>
@@ -71,19 +75,21 @@ function CreateBudget({ refreshData }) {
                 >
                   {emojiIcon}
                 </Button>
-                <div className="absolute z-20">
-                  <EmojiPicker
-                    open={openEmojiPicker}
-                    onEmojiClick={(e) => {
-                      setEmojiIcon(e.emoji);
-                      setOpenEmojiPicker(false);
-                    }}
-                  />
-                </div>
+                {openEmojiPicker && (
+                  <div className="absolute z-20">
+                    <EmojiPicker
+                      onEmojiClick={(e) => {
+                        setEmojiIcon(e.emoji);
+                        setOpenEmojiPicker(false);
+                      }}
+                    />
+                  </div>
+                )}
                 <div className="mt-2">
                   <h2 className="text-black font-medium my-1">Budget Name</h2>
                   <Input
                     placeholder="e.g. Home Decor"
+                    value={name}
                     onChange={(e) => setName(e.target.value)}
                   />
                 </div>
@@ -92,6 +98,7 @@ function CreateBudget({ refreshData }) {
                   <Input
                     type="number"
                     placeholder="e.g. 5000$"
+                    value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                   />
                 </div>
@@ -102,7 +109,7 @@ function CreateBudget({ refreshData }) {
             <DialogClose asChild>
               <Button
                 disabled={!(name && amount)}
-                onClick={() => onCreateBudget()}
+                onClick={onCreateBudget}
                 className="mt-5 w-full rounded-full"
               >
                 Create Budget

@@ -3,9 +3,12 @@ import React from "react";
 
 function BudgetItem({ budget }) {
   const calculateProgressPerc = () => {
-    const perc = (budget.totalSpend / budget.amount) * 100;
+    const totalSpend = budget.totalSpend || 0;
+    const amount = budget.amount || 1; // Avoid division by zero
+    const perc = (totalSpend / amount) * 100;
     return perc > 100 ? 100 : perc.toFixed(2);
   };
+  
   return (
     <Link href={"/dashboard/expenses/" + budget?.id}>
       <div

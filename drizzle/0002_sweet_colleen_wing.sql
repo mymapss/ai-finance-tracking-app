@@ -1,0 +1,1 @@
+ALTER TABLE "incomes" RENAME COLUMN "createdBy" TO "createdby";

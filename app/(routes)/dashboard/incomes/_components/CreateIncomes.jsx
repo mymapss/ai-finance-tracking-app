@@ -22,30 +22,38 @@ function CreateIncomes({ refreshData }) {
   const [emojiIcon, setEmojiIcon] = useState("😀");
   const [openEmojiPicker, setOpenEmojiPicker] = useState(false);
 
-  const [name, setName] = useState();
-  const [amount, setAmount] = useState();
+  const [name, setName] = useState("");
+  const [amount, setAmount] = useState("");
 
   const { user } = useUser();
 
-  /**
-   * Used to Create New Budget
-   */
   const onCreateIncomes = async () => {
-    const result = await db
-      .insert(Incomes)
-      .values({
-        name: name,
-        amount: amount,
-        createdBy: user?.primaryEmailAddress?.emailAddress,
-        icon: emojiIcon,
-      })
-      .returning({ insertedId: Incomes.id });
+    if (!name || !amount) {
+      toast.error("Please fill in all fields.");
+      return;
+    }
 
-    if (result) {
-      refreshData();
-      toast("New Income Source Created!");
+    try {
+      const result = await db
+        .insert(Incomes)
+        .values({
+          name: name,
+          amount: parseFloat(amount),
+          createdBy: user?.primaryEmailAddress?.emailAddress,
+          icon: emojiIcon,
+        })
+        .returning({ insertedId: Incomes.id });
+
+      if (result) {
+        refreshData();
+        toast.success("New Income Source Created!");
+      }
+    } catch (error) {
+      console.error("Error creating income:", error);
+      toast.error("Failed to create income source.");
     }
   };
+
   return (
     <div>
       <Dialog>
@@ -63,7 +71,7 @@ function CreateIncomes({ refreshData }) {
           <DialogHeader>
             <DialogTitle>Create New Income Source</DialogTitle>
             <DialogDescription>
-              <div className="mt-5">
+              <div className="mt-5 relative">
                 <Button
                   variant="outline"
                   className="text-lg"
@@ -71,27 +79,30 @@ function CreateIncomes({ refreshData }) {
                 >
                   {emojiIcon}
                 </Button>
-                <div className="absolute z-20">
-                  <EmojiPicker
-                    open={openEmojiPicker}
-                    onEmojiClick={(e) => {
-                      setEmojiIcon(e.emoji);
-                      setOpenEmojiPicker(false);
-                    }}
-                  />
-                </div>
+                {openEmojiPicker && (
+                  <div className="absolute z-20">
+                    <EmojiPicker
+                      onEmojiClick={(e) => {
+                        setEmojiIcon(e.emoji);
+                        setOpenEmojiPicker(false);
+                      }}
+                    />
+                  </div>
+                )}
                 <div className="mt-2">
                   <h2 className="text-black font-medium my-1">Source Name</h2>
                   <Input
                     placeholder="e.g. Youtube"
+                    value={name}
                     onChange={(e) => setName(e.target.value)}
                   />
                 </div>
                 <div className="mt-2">
-                  <h2 className="text-black font-medium my-1">Montly Amount</h2>
+                  <h2 className="text-black font-medium my-1">Monthly Amount</h2>
                   <Input
                     type="number"
                     placeholder="e.g. 5000$"
+                    value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                   />
                 </div>
@@ -99,13 +110,16 @@ function CreateIncomes({ refreshData }) {
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="sm:justify-start">
+            <Button
+              disabled={!(name && amount)}
+              onClick={onCreateIncomes}
+              className="mt-5 w-full rounded-full"
+            >
+              Create Income Source
+            </Button>
             <DialogClose asChild>
-              <Button
-                disabled={!(name && amount)}
-                onClick={() => onCreateIncomes()}
-                className="mt-5 w-full rounded-full"
-              >
-                Create Income Source
+              <Button className="mt-5 w-full rounded-full">
+                Cancel
               </Button>
             </DialogClose>
           </DialogFooter>
