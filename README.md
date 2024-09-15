@@ -13,10 +13,6 @@
   </div>
 
   <h3 align="center">Finan Smart</h3>
-
-   <div align="center">
-     Build this project step by step with our detailed tutorial on <a href="https://www.youtube.com/@albertmends" target="_blank"><b>Your YouTube Channel</b></a>. Join the community!
-    </div>
 </div>
 
 ## 📋 <a name="table">Table of Contents</a>
@@ -28,19 +24,9 @@
 5. 🕸️ [Assets & Code](#snippets)
 6. 🚀 [More](#more)
 
-## 🚨 Tutorial
-
-This repository contains the code corresponding to an in-depth tutorial available on our YouTube channel, <a href="https://www.youtube.com/@albertmends/videos" target="_blank"><b>Code with Albert</b></a>.
-
-If you prefer visual learning, this is the perfect resource for you. Follow our tutorial to learn how to build projects like these step-by-step in a beginner-friendly manner!
-
 ## <a name="introduction">🤖 Introduction</a>
 
 Built with the latest Next.js and TypeScript, Finan Smart is an advanced AI financial advice tool. It allows users to input their income, expenses, and budgets, and receive personalized financial advice based on their financial data. This project is perfect for those looking to learn how to integrate AI-driven insights and financial management into a Next.js application.
-
-If you're getting started and need assistance or face any bugs, join our active Discord community. It's a place where people help each other out.
-
-<a href="https://discord.com/channels/1221368900579754074/1221368901162631243" target="_blank"><img src="https://github.com/sujatagunale/EasyRead/assets/151519281/618f4872-1e10-42da-8213-1d69e486d02e"  /></a>
 
 ## <a name="tech-stack">⚙️ Tech Stack</a>
 
@@ -116,8 +102,5 @@ Open [http://localhost:3000](http://localhost:3000) in your browser to view the 
 
 ## <a name="snippets">🕸️ Assets & Code</a>
 
-The repository includes all the assets and code you need to get started with Finan Smart. Follow along with our YouTube tutorial for a step-by-step guide.
+The repository includes all the assets and code you need to get started with Finan Smart. 
 
-## <a name="more">🚀 More</a>
-
-For more information and additional resources, check out our YouTube channel and join our Discord community for support and discussions.
